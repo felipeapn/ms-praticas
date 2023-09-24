@@ -1,0 +1,3 @@
+INSERT INTO USER_BASE (name, mail, phone_number, linkedin) VALUES ('Felipe', 'felipe@mail.com', '604000012', 'www.linkdin.com/felipe');
+INSERT INTO USER_BASE (name, mail, phone_number, linkedin) VALUES ('Daniel', 'Daniel@mail.com', '604000012', 'www.linkdin.com/Daniel');
+INSERT INTO USER_BASE (name, mail, phone_number, linkedin) VALUES ('Domingos', 'Domingos@mail.com', '604000012', 'www.linkdin.com/Domingos');
