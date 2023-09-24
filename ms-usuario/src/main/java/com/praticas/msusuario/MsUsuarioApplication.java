@@ -1,13 +1,13 @@
-package com.praticas.mspraticas;
+package com.praticas.msusuario;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class MsPraticasApplication {
+public class MsUsuarioApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(MsPraticasApplication.class, args);
+		SpringApplication.run(MsUsuarioApplication.class, args);
 	}
 
 }
