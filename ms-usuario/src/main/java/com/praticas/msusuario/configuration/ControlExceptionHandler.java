@@ -1,21 +1,27 @@
 package com.praticas.msusuario.configuration;
 
+import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import com.praticas.msusuario.exception.BusinessException;
 
-@ControllerAdvice
+@RestControllerAdvice
 public class ControlExceptionHandler extends ResponseEntityExceptionHandler{
 	
 	private static final String MS_TRACEID = "ms-usuario";
+	
+	public static final String CONSTRAINT_VALIDATION_FAILED = "Constraint validation failed";
+
 
 	@ExceptionHandler(NoSuchElementException.class)
 	public ResponseEntity<Object> handleNoSuchElementException (NoSuchElementException ex, WebRequest req) {
@@ -28,10 +34,35 @@ public class ControlExceptionHandler extends ResponseEntityExceptionHandler{
 			.build();
 		
 		HttpHeaders httpHeaders = new HttpHeaders();
-		httpHeaders.set(MS_TRACEID, this.MS_TRACEID);
+		
+		//TODO: Trace ID
+		httpHeaders.set(MS_TRACEID, MS_TRACEID);
 		
 		return ResponseEntity.status(businessException.getHttpStatusCode())
 				.headers(httpHeaders).body(businessException.getOnlyBody());
 	}
+	
+	@Override
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+        List<String> errorList = ex
+                .getBindingResult()
+                .getFieldErrors()
+                .stream()
+                .map(fieldError -> fieldError.getDefaultMessage())
+                .collect(Collectors.toList());
+        
+        BusinessException businessException = BusinessException.builder()
+    			.httpStatusCode(HttpStatus.BAD_REQUEST)
+    			.message(CONSTRAINT_VALIDATION_FAILED)
+    			.description(errorList.toString())
+    			.uiDescription("Alguno parametro de la requesicion esta incorrecto")
+    			.build();
+        
+        //TODO: Trace ID
+        headers.set(MS_TRACEID, MS_TRACEID);
+        
+        return ResponseEntity.status(businessException.getHttpStatusCode())
+				.headers(headers).body(businessException.getOnlyBody());
+    }
 
 }
