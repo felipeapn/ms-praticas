@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -64,5 +65,24 @@ public class ControlExceptionHandler extends ResponseEntityExceptionHandler{
         return ResponseEntity.status(businessException.getHttpStatusCode())
 				.headers(headers).body(businessException.getOnlyBody());
     }
+	
+	@ExceptionHandler(EmptyResultDataAccessException.class)
+	public ResponseEntity<Object> handleEmptyResultDataAccessException (EmptyResultDataAccessException ex, WebRequest req) {
+		
+		BusinessException businessException = BusinessException.builder()
+			.httpStatusCode(HttpStatus.BAD_REQUEST)
+			.message("Object not found")
+			.description(ex.getMessage())
+			.uiDescription(ex.getLocalizedMessage())
+			.build();
+		
+		HttpHeaders httpHeaders = new HttpHeaders();
+		
+		//TODO: Trace ID
+		httpHeaders.set(MS_TRACEID, MS_TRACEID);
+		
+		return ResponseEntity.status(businessException.getHttpStatusCode())
+				.headers(httpHeaders).body(businessException.getOnlyBody());
+	}
 
 }

@@ -14,11 +14,9 @@ public class UserBaseMapper {
 	@Autowired
 	private ModelMapper modelMapper;
 	
-	public UserBase getUserBase(UserBaseForm userBaseForm) {
-		
+	public UserBase getUserBase(UserBaseForm userBaseForm) {	
 		
 		return this.modelMapper.map(userBaseForm, UserBase.class);
-
 		
 	}
 
