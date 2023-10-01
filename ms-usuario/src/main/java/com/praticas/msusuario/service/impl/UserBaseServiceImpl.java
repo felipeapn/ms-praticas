@@ -61,6 +61,14 @@ public class UserBaseServiceImpl implements UserBaseService {
 		
 		return this.userBaseMapper.getUserBaseDto(userBase);
 	}
+
+	@Override
+	public void delete(Long id) {
+
+		userBaseRepository.deleteById(id);
+		
+	}
+	
 	
 	
 

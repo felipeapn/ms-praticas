@@ -13,6 +13,8 @@ public interface UserBaseService {
 
 		List<UserBaseDto> findAll();
 
-		UserBaseDto findById(Long id); 
+		UserBaseDto findById(Long id);
+
+		void delete(Long id); 
 
 }
