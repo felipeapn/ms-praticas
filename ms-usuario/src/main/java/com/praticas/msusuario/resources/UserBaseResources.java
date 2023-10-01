@@ -17,17 +17,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.praticas.msusuario.dto.UserBaseDto;
 import com.praticas.msusuario.dto.form.UserBaseForm;
-import com.praticas.msusuario.entities.UserBase;
-import com.praticas.msusuario.repositories.UserBaseRepository;
 import com.praticas.msusuario.service.UserBaseService;
 
 @RestController
 @RequestMapping(value = "/userbase")
 public class UserBaseResources {
-	
-	@Autowired
-	private UserBaseRepository userBaseRepository;
-	
+		
 	@Autowired
 	private UserBaseService userBaseService;
 	
@@ -48,15 +43,19 @@ public class UserBaseResources {
 	}
 	
 	@GetMapping
-	public ResponseEntity<List<UserBase>> findAll() {
-		List<UserBase> list = userBaseRepository.findAll();
+	public ResponseEntity<List<UserBaseDto>> findAll() {
+		
+		List<UserBaseDto> list = userBaseService.findAll();
+		
 		return ResponseEntity.ok(list);
 	}
 	
 	@GetMapping(value = "/{id}")
-	public ResponseEntity<UserBase> findById(@PathVariable Long id) {
-		UserBase userBase = userBaseRepository.findById(id).get();
-		return ResponseEntity.ok(userBase);
+	public ResponseEntity<UserBaseDto> findById(@PathVariable Long id) {
+		
+		UserBaseDto userBaseDto = userBaseService.findById(id);
+		
+		return ResponseEntity.ok(userBaseDto);
 	}
 
 }

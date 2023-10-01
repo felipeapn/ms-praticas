@@ -1,5 +1,8 @@
 package com.praticas.msusuario.service.impl;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -33,12 +36,30 @@ public class UserBaseServiceImpl implements UserBaseService {
 
 	@Override
 	public UserBaseDto update(Long id, UserBaseForm usuarioForm) {
+		
 		UserBase userBase = userBaseRepository.findById(id)
 				.orElseThrow(() -> new EmptyResultDataAccessException("Usario de ID no esta registrado", 1));
 				
 		BeanUtils.copyProperties(usuarioForm, userBase);
 		
 		return this.userBaseMapper.getUserBaseDto(this.userBaseRepository.save(userBase));
+	}
+
+	@Override
+	public List<UserBaseDto> findAll() {
+		
+		List<UserBase> list = userBaseRepository.findAll();
+		
+		return list.stream().map(x -> this.userBaseMapper.getUserBaseDto(x)).collect(Collectors.toList());
+	}
+
+	@Override
+	public UserBaseDto findById(Long id) {
+		
+		UserBase userBase = userBaseRepository.findById(id)
+				.orElseThrow(() -> new EmptyResultDataAccessException("Usario de ID no esta registrado", 1));
+		
+		return this.userBaseMapper.getUserBaseDto(userBase);
 	}
 	
 	
