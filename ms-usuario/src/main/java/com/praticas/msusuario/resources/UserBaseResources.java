@@ -17,6 +17,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 import com.praticas.msusuario.dto.UserBaseDto;
 import com.praticas.msusuario.dto.form.UserBaseForm;
 import com.praticas.msusuario.service.UserBaseService;
@@ -33,6 +36,9 @@ public class UserBaseResources {
 		
 		UserBaseDto userBaseDto = userBaseService.create(usuarioForm);
 		
+		userBaseDto.add(linkTo(methodOn(UserBaseResources.class).findAll())
+				.withRel("UserList"));
+		
 		return ResponseEntity.ok(userBaseDto);
 	}
 	
@@ -40,6 +46,9 @@ public class UserBaseResources {
 	public ResponseEntity<UserBaseDto> update (@PathVariable Long id, @RequestBody UserBaseForm usuarioForm) {
 		
 		UserBaseDto userBaseDto = userBaseService.update(id, usuarioForm);
+		
+		userBaseDto.add(linkTo(methodOn(UserBaseResources.class).findAll())
+				.withRel("UserList"));
 		
 		return ResponseEntity.ok(userBaseDto);
 	}
@@ -49,6 +58,13 @@ public class UserBaseResources {
 		
 		List<UserBaseDto> list = userBaseService.findAll();
 		
+		if (list.isEmpty()) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+		
+		list.forEach(user -> user.add(linkTo(methodOn(UserBaseResources.class).findById(user.getId()))
+								.withSelfRel()));
+		
 		return ResponseEntity.ok(list);
 	}
 	
@@ -56,6 +72,9 @@ public class UserBaseResources {
 	public ResponseEntity<UserBaseDto> findById(@PathVariable Long id) {
 		
 		UserBaseDto userBaseDto = userBaseService.findById(id);
+		
+		userBaseDto.add(linkTo(methodOn(UserBaseResources.class).findAll())
+				.withRel("UserList"));
 		
 		return ResponseEntity.ok(userBaseDto);
 	}

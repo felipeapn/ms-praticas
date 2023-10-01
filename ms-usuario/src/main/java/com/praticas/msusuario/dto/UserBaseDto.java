@@ -2,6 +2,8 @@ package com.praticas.msusuario.dto;
 
 import java.io.Serializable;
 
+import org.springframework.hateoas.RepresentationModel;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserBaseDto implements Serializable{
+public class UserBaseDto extends RepresentationModel<UserBaseDto> implements Serializable{
 
 
 	private static final long serialVersionUID = 1L;
