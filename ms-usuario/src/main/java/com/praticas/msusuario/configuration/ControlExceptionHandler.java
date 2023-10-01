@@ -2,8 +2,10 @@ package com.praticas.msusuario.configuration;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.slf4j.MDC;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -20,6 +22,7 @@ import com.praticas.msusuario.exception.BusinessException;
 public class ControlExceptionHandler extends ResponseEntityExceptionHandler{
 	
 	private static final String MS_TRACEID = "ms-usuario";
+	private static final String MS_TRACEID_HEY = "Trace-id";
 	
 	public static final String CONSTRAINT_VALIDATION_FAILED = "Constraint validation failed";
 
@@ -36,8 +39,7 @@ public class ControlExceptionHandler extends ResponseEntityExceptionHandler{
 		
 		HttpHeaders httpHeaders = new HttpHeaders();
 		
-		//TODO: Trace ID
-		httpHeaders.set(MS_TRACEID, MS_TRACEID);
+		httpHeaders.set(MS_TRACEID_HEY, MS_TRACEID);
 		
 		return ResponseEntity.status(businessException.getHttpStatusCode())
 				.headers(httpHeaders).body(businessException.getOnlyBody());
@@ -59,8 +61,7 @@ public class ControlExceptionHandler extends ResponseEntityExceptionHandler{
     			.uiDescription("Alguno parametro de la requesicion esta incorrecto")
     			.build();
         
-        //TODO: Trace ID
-        headers.set(MS_TRACEID, MS_TRACEID);
+        headers.set(MS_TRACEID_HEY, MS_TRACEID);
         
         return ResponseEntity.status(businessException.getHttpStatusCode())
 				.headers(headers).body(businessException.getOnlyBody());
@@ -78,11 +79,11 @@ public class ControlExceptionHandler extends ResponseEntityExceptionHandler{
 		
 		HttpHeaders httpHeaders = new HttpHeaders();
 		
-		//TODO: Trace ID
-		httpHeaders.set(MS_TRACEID, MS_TRACEID);
+		httpHeaders.set(MS_TRACEID_HEY, MS_TRACEID);
 		
 		return ResponseEntity.status(businessException.getHttpStatusCode())
 				.headers(httpHeaders).body(businessException.getOnlyBody());
 	}
+	
 
 }

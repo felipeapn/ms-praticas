@@ -23,7 +23,11 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import com.praticas.msusuario.dto.UserBaseDto;
 import com.praticas.msusuario.dto.form.UserBaseForm;
 import com.praticas.msusuario.service.UserBaseService;
+import com.praticas.msusuario.util.LogUtils;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @RestController
 @RequestMapping(value = "/userbase")
 public class UserBaseResources {
@@ -34,10 +38,16 @@ public class UserBaseResources {
 	@PostMapping(consumes = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<UserBaseDto> create (@Valid @RequestBody UserBaseForm usuarioForm) {
 		
+		log.info("method={} step=userBaseCreate data=[email : {}]", 
+				LogUtils.getCurrentMethodName(), usuarioForm.getMail());
+		
 		UserBaseDto userBaseDto = userBaseService.create(usuarioForm);
 		
 		userBaseDto.add(linkTo(methodOn(UserBaseResources.class).findAll())
 				.withRel("UserList"));
+		
+		log.info("method={} step=userBaseCreate-ok data=[id : {}, email : {}]", 
+				LogUtils.getCurrentMethodName(), userBaseDto.getId(), userBaseDto.getMail());
 		
 		return ResponseEntity.ok(userBaseDto);
 	}
@@ -45,10 +55,16 @@ public class UserBaseResources {
 	@PutMapping("/{id}")
 	public ResponseEntity<UserBaseDto> update (@PathVariable Long id, @RequestBody UserBaseForm usuarioForm) {
 		
+		log.info("method={} step=userBaseUpdate data=[id : {}, email : {}]", 
+				LogUtils.getCurrentMethodName(), id, usuarioForm.getMail());
+		
 		UserBaseDto userBaseDto = userBaseService.update(id, usuarioForm);
 		
 		userBaseDto.add(linkTo(methodOn(UserBaseResources.class).findAll())
 				.withRel("UserList"));
+		
+		log.info("method={} step=userBaseUpdate-ok data=[id : {}, email : {}]", 
+				LogUtils.getCurrentMethodName(), userBaseDto.getId(), userBaseDto.getMail());
 		
 		return ResponseEntity.ok(userBaseDto);
 	}
@@ -56,11 +72,16 @@ public class UserBaseResources {
 	@GetMapping
 	public ResponseEntity<List<UserBaseDto>> findAll() {
 		
+		log.info("method={} step=findAllUserBase", LogUtils.getCurrentMethodName());
+		
 		List<UserBaseDto> list = userBaseService.findAll();
 		
 		if (list.isEmpty()) {
+			log.info("method={} step=findAllUserBase-NOT_FOUND", LogUtils.getCurrentMethodName());
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
+		
+		log.info("method={} step=findAllUserBase-ok", LogUtils.getCurrentMethodName());
 		
 		list.forEach(user -> user.add(linkTo(methodOn(UserBaseResources.class).findById(user.getId()))
 								.withSelfRel()));
@@ -71,10 +92,16 @@ public class UserBaseResources {
 	@GetMapping(value = "/{id}")
 	public ResponseEntity<UserBaseDto> findById(@PathVariable Long id) {
 		
-		UserBaseDto userBaseDto = userBaseService.findById(id);
+		log.info("method={} step=findUserBaseByID data=[id : {}]", 
+				LogUtils.getCurrentMethodName(), id);
 		
+		UserBaseDto userBaseDto = userBaseService.findById(id);
+				
 		userBaseDto.add(linkTo(methodOn(UserBaseResources.class).findAll())
 				.withRel("UserList"));
+		
+		log.info("method={} step=findUserBaseByID-ok data=[id : {}]", 
+				LogUtils.getCurrentMethodName(), userBaseDto.getId());
 		
 		return ResponseEntity.ok(userBaseDto);
 	}
@@ -82,7 +109,13 @@ public class UserBaseResources {
 	@DeleteMapping(value = "/{id}")
 	public void delete(@PathVariable Long id) {
 		
+		log.info("method={} step=deleteUserBase data=[id : {}]", 
+				LogUtils.getCurrentMethodName(), id);
+		
 		userBaseService.delete(id);
+		
+		log.info("method={} step=deleteUserBase-ok data=[id : {}]", 
+				LogUtils.getCurrentMethodName(), id);
 		
 	}
 	
