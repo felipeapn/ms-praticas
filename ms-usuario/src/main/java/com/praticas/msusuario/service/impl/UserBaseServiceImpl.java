@@ -29,8 +29,6 @@ public class UserBaseServiceImpl implements UserBaseService {
 		
 		UserBase userBase = this.userBaseMapper.getUserBase(userBaseForm);
 		
-		this.userBaseRepository.save(userBase);
-		
 		return this.userBaseMapper.getUserBaseDto(this.userBaseRepository.save(userBase));
 	}
 
