@@ -2,10 +2,8 @@ package com.praticas.msusuario.configuration;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.slf4j.MDC;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -25,6 +23,15 @@ public class ControlExceptionHandler extends ResponseEntityExceptionHandler{
 	private static final String MS_TRACEID_HEY = "Trace-id";
 	
 	public static final String CONSTRAINT_VALIDATION_FAILED = "Constraint validation failed";
+	
+	@ExceptionHandler(value = { BusinessException.class})
+	protected ResponseEntity<Object> handleConflict(BusinessException ex, WebRequest request) {
+		
+		HttpHeaders httpHeaders = new HttpHeaders();
+		httpHeaders.set(MS_TRACEID_HEY, MS_TRACEID);
+		
+		return ResponseEntity.status(ex.getHttpStatusCode()).headers(httpHeaders).body(ex.getOnlyBody());
+	}
 
 
 	@ExceptionHandler(NoSuchElementException.class)

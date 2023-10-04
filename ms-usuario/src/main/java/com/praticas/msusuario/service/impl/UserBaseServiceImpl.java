@@ -1,6 +1,7 @@
 package com.praticas.msusuario.service.impl;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.BeanUtils;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 import com.praticas.msusuario.dto.UserBaseDto;
 import com.praticas.msusuario.dto.form.UserBaseForm;
 import com.praticas.msusuario.entities.UserBase;
+import com.praticas.msusuario.exception.EmailAlreadyTakenException;
 import com.praticas.msusuario.mappers.UserBaseMapper;
 import com.praticas.msusuario.repositories.UserBaseRepository;
 import com.praticas.msusuario.service.UserBaseService;
@@ -27,6 +29,12 @@ public class UserBaseServiceImpl implements UserBaseService {
 	@Override
 	public UserBaseDto create(UserBaseForm userBaseForm) {
 		
+		Optional<UserBase> optional = this.userBaseRepository.findByMail(userBaseForm.getMail());
+		
+		if(!optional.isEmpty()) {
+			throw new EmailAlreadyTakenException();
+		}
+					
 		UserBase userBase = this.userBaseMapper.getUserBase(userBaseForm);
 		
 		return this.userBaseMapper.getUserBaseDto(this.userBaseRepository.save(userBase));

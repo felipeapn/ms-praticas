@@ -28,6 +28,7 @@ import com.praticas.msusuario.configuration.MapperConfig;
 import com.praticas.msusuario.dto.UserBaseDto;
 import com.praticas.msusuario.dto.form.UserBaseForm;
 import com.praticas.msusuario.entities.UserBase;
+import com.praticas.msusuario.exception.EmailAlreadyTakenException;
 import com.praticas.msusuario.mappers.UserBaseMapper;
 import com.praticas.msusuario.repositories.UserBaseRepository;
 import com.praticas.msusuario.service.impl.UserBaseServiceImpl;
@@ -94,6 +95,26 @@ class UserBaseServiceImplTest {
 				
 		assertEquals(userBaseForm.getMail(), userBaseDtoReturned.getMail());
 	}
+	
+	@Test
+	void canNotCreateEmailAlreadyTaken() {
+		//given
+		
+		//when
+		
+		when(userBaseRepository.findByMail(any(String.class))).thenReturn(Optional.of(userBase));
+		
+		EmailAlreadyTakenException emailAlreadyTakenException = assertThrows(EmailAlreadyTakenException.class, 
+				() -> underTest.create(userBaseForm));
+				
+		//then
+		assertEquals("Email ya utilizado", emailAlreadyTakenException.getDescription());
+		
+		verify(userBaseMapper, times(0)).getUserBase(any());
+		verify(userBaseRepository, times(0)).save(any());
+		verify(userBaseMapper, times(0)).getUserBaseDto(any());
+		
+	}
 
 	@Test
 	void canUpdate() {
@@ -117,7 +138,6 @@ class UserBaseServiceImplTest {
 	@Test
 	void canNotFindByIdOnUpdate() {
 		//given
-		Optional.empty();
 		
 		//when
 		when(userBaseRepository.findById(anyLong())).thenReturn(Optional.empty());
